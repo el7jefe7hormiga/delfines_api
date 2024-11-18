@@ -2,4 +2,7 @@ node_modules
 tmp
 .env*
 http
+<<<<<<< HEAD
 README.md
+=======
+>>>>>>> 25780a294cd268aa0441f81766ff468bbaee399f

@@ -9,4 +9,8 @@ export const pool = createPool({
   database: DB_NAME,
   timezone: 'local',
   ...sslConfig
+<<<<<<< HEAD
 }); 
+=======
+});
+>>>>>>> 25780a294cd268aa0441f81766ff468bbaee399f
