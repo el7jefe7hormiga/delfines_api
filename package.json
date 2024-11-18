@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "build": "vercel prod"
+    "build": "npm run build"
   },
   "keywords": [],
   "author": "aLL",
