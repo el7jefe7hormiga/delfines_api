@@ -6,8 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js",
-    "build": "npm run build"
+    "start": "node src/index.js"
   },
   "keywords": [],
   "author": "aLL",
