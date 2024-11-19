@@ -1,11 +1,11 @@
-import { Router } from "express";
-import {
+const { Router } = require("express");
+const {
   createAsistencia,
   deleteAsistencia,
   getAsistencia,
   getAsistencias,
   getAsistenciasDeJugador
-} from "../controllers/asistencias.controller.js";
+} = require('../controllers/asistencias.controller.js');
 
 const router = Router();
 
@@ -36,4 +36,4 @@ router.delete("/asistencia/:jugador_id/:reunion_id", deleteAsistencia);
 // entonces: Se crea el registro.
 
 
-export default router;
+module.exports = router;

@@ -1,6 +1,6 @@
-import { pool } from "../db.js";
+const { pool } = require('../db.js');
 
-export const getJugadores = async (req, res) => {
+const getJugadores = async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM jugadores");
     res.json(rows);
@@ -9,7 +9,7 @@ export const getJugadores = async (req, res) => {
   }
 };
 
-export const getJugador = async (req, res) => {
+const getJugador = async (req, res) => {
   try {
     const { id } = req.params;
     const [rows] = await pool.query("SELECT * FROM jugadores WHERE id = ?", [
@@ -24,7 +24,7 @@ export const getJugador = async (req, res) => {
   }
 };
 
-export const deleteJugador = async (req, res) => {
+const deleteJugador = async (req, res) => {
   try {
     const { id } = req.params;
     const [rows] = await pool.query("DELETE FROM jugadores WHERE id = ?", [id]);
@@ -37,7 +37,7 @@ export const deleteJugador = async (req, res) => {
   }
 };
 
-export const createJugador = async (req, res) => {
+const createJugador = async (req, res) => {
   try {
     const { nombre, sexo, fdn, direccion, escuela, padres, telefono, talla } = req.body;
     const fecha = formatDate(new Date());
@@ -52,7 +52,7 @@ export const createJugador = async (req, res) => {
   }
 };
 
-export const updateJugador = async (req, res) => {
+const updateJugador = async (req, res) => {
   try {
     const { id } = req.params;
     const { nombre, sexo, fdn, direccion, escuela, padres, telefono, talla } = req.body;
@@ -72,3 +72,11 @@ export const updateJugador = async (req, res) => {
     return res.status(500).json({ error: error, message: "Algo salió mal :(" });
   }
 };
+
+module.exports = {
+  getJugador,
+  getJugadores,
+  createJugador,
+  deleteJugador,
+  updateJugador
+}

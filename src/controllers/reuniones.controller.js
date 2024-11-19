@@ -1,6 +1,6 @@
-import { pool } from "../db.js";
+const { pool } = require('../db.js');
 
-export const getReuniones = async (req, res) => {
+const getReuniones = async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM reuniones");
     res.json(rows);
@@ -9,7 +9,7 @@ export const getReuniones = async (req, res) => {
   }
 };
 
-export const getReunion = async (req, res) => {
+const getReunion = async (req, res) => {
   try {
     const { id } = req.params;
     const [rows] = await pool.query("SELECT * FROM reuniones WHERE id = ?", [id]);
@@ -22,7 +22,7 @@ export const getReunion = async (req, res) => {
   }
 };
 
-export const deleteReunion = async (req, res) => {
+const deleteReunion = async (req, res) => {
   try {
     const { id } = req.params;
     const [rows] = await pool.query("DELETE FROM reuniones WHERE id = ?", [id]);
@@ -35,7 +35,7 @@ export const deleteReunion = async (req, res) => {
   }
 };
 
-export const createReunion = async (req, res) => {
+const createReunion = async (req, res) => {
   try {
     const { fecha, tipo } = req.body;
     const [rows] = await pool.query(
@@ -47,7 +47,7 @@ export const createReunion = async (req, res) => {
   }
 };
 
-export const updateReunion = async (req, res) => {
+const updateReunion = async (req, res) => {
   try {
     const { id } = req.params;
     const { fecha, tipo } = req.body;
@@ -64,4 +64,10 @@ export const updateReunion = async (req, res) => {
   }
 };
 
-
+module.exports = {
+  getReunion,
+  getReuniones,
+  createReunion,
+  deleteReunion,
+  updateReunion
+}

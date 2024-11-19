@@ -15,4 +15,4 @@ function formatDate(fechaLocalCliente = new Date()) {
   return fechaFormateada;
 }
 
-export default formatDate;
+module.exports = formatDate;

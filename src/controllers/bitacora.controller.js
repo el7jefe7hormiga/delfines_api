@@ -1,6 +1,6 @@
-import { pool } from "../db.js";
+const { pool } = require('../db.js');
 
-export const getBitacoras = async (req, res) => {
+const getBitacoras = async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM bitacora");
     res.json(rows);
@@ -9,7 +9,7 @@ export const getBitacoras = async (req, res) => {
   }
 };
 
-export const getBitacora = async (req, res) => {
+const getBitacora = async (req, res) => {
   try {
     const { id } = req.params;
     const [rows] = await pool.query("SELECT * FROM bitacora WHERE id = ?", [id]);
@@ -22,7 +22,7 @@ export const getBitacora = async (req, res) => {
   }
 };
 
-export const getBitacorasCompletadas = async (req, res) => {
+const getBitacorasCompletadas = async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM bitacora WHERE completada=1");
     res.json(rows);
@@ -30,7 +30,7 @@ export const getBitacorasCompletadas = async (req, res) => {
     return res.status(500).json({ error: error, message: "Algo salió mal :(" });
   }
 };
-export const getBitacorasPendientes = async (req, res) => {
+const getBitacorasPendientes = async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM bitacora WHERE completada=0");
     res.json(rows);
@@ -40,7 +40,7 @@ export const getBitacorasPendientes = async (req, res) => {
 };
 
 
-export const getBitacorasTareaCompletadas = async (req, res) => {
+const getBitacorasTareaCompletadas = async (req, res) => {
   const { tarea } = req.params;
   try {
     const [rows] = await pool.query("SELECT * FROM bitacora WHERE tarea_id=? AND completada=1", [tarea]);
@@ -52,7 +52,7 @@ export const getBitacorasTareaCompletadas = async (req, res) => {
     return res.status(500).json({ error: error, message: "Algo salió mal :(" });
   }
 };
-export const getBitacorasTareaPendientes = async (req, res) => {
+const getBitacorasTareaPendientes = async (req, res) => {
   const { tarea_id } = req.params;
   try {
     const [rows] = await pool.query("SELECT * FROM bitacora WHERE tarea_id=? AND completada=0", [tarea_id]);
@@ -65,7 +65,7 @@ export const getBitacorasTareaPendientes = async (req, res) => {
   }
 };
 
-export const getHistorialJugador = async (req, res) => {
+const getHistorialJugador = async (req, res) => {
   const { jugador_id } = req.params;
   try {
     const [rows] = await pool.query("SELECT * FROM bitacora WHERE jugador_id=?", [jugador_id]);
@@ -78,7 +78,7 @@ export const getHistorialJugador = async (req, res) => {
   }
 };
 
-export const deleteBitacora = async (req, res) => {
+const deleteBitacora = async (req, res) => {
   try {
     const { id } = req.params;
     const [rows] = await pool.query("DELETE FROM bitacora WHERE id = ?", [id]);
@@ -91,7 +91,7 @@ export const deleteBitacora = async (req, res) => {
   }
 };
 
-export const createBitacora = async (req, res) => {
+const createBitacora = async (req, res) => {
   try {
     const { tarea_id, jugador_id, recibido, completada, comentario } = req.body;
     //const fecha = formatDate(new Date());
@@ -106,7 +106,7 @@ export const createBitacora = async (req, res) => {
   }
 };
 
-export const updateBitacora = async (req, res) => {
+const updateBitacora = async (req, res) => {
   try {
     const { id } = req.params;
     const { tarea_id, jugador_id, recibido, fecha, completada, comentario } = req.body;
@@ -124,3 +124,16 @@ export const updateBitacora = async (req, res) => {
     return res.status(500).json({ error: error, message: "Algo salió mal :(" });
   }
 };
+
+module.exports = {
+  getBitacora,
+  getBitacoras,
+  getBitacorasCompletadas,
+  getBitacorasPendientes,
+  getBitacorasTareaCompletadas,
+  getBitacorasTareaPendientes,
+  getHistorialJugador,
+  createBitacora,
+  deleteBitacora,
+  updateBitacora
+}

@@ -1,13 +1,13 @@
-import express from "express";
-import morgan from "morgan";
+const express = require("express");
+const morgan = require("morgan");
 
-import indexRoutes from './routes/index.routes.js';
-import jugadoresRoutes from "./routes/jugadores.routes.js";
-import tareasRoutes from "./routes/tareas.routes.js";
-import bitacoraRoutes from "./routes/bitacora.routes.js";
-import staffRoutes from './routes/staff.routes.js';
-import asistenciasRoutes from './routes/asistencias.routes.js';
-import reunionesRoutes from './routes/reuniones.routes.js';
+const indexRoutes = require('./routes/index.routes.js');
+const jugadoresRoutes = require("./routes/jugadores.routes.js");
+const tareasRoutes = require("./routes/tareas.routes.js");
+const bitacoraRoutes = require("./routes/bitacora.routes.js");
+const staffRoutes = require('./routes/staff.routes.js');
+const asistenciasRoutes = require('./routes/asistencias.routes.js');
+const reunionesRoutes = require('./routes/reuniones.routes.js');
 
 process.env.TZ = "America/Mazatlan"
 console.log(new Date().toString());
@@ -34,4 +34,4 @@ app.use((req, res, next) => {
   res.status(404).json({ message: "Ruta no encontrada!, (/api/)" });
 });
 
-export default app;
+module.exports = app;

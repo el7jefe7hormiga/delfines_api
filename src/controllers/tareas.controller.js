@@ -1,6 +1,6 @@
-import { pool } from "../db.js";
+const { pool } = require('../db.js');
 
-export const getTareas = async (req, res) => {
+const getTareas = async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM tareas");
     res.json(rows);
@@ -9,7 +9,7 @@ export const getTareas = async (req, res) => {
   }
 };
 
-export const getTarea = async (req, res) => {
+const getTarea = async (req, res) => {
   try {
     const { id } = req.params;
     const [rows] = await pool.query("SELECT * FROM tareas WHERE id = ?", [id]);
@@ -22,7 +22,7 @@ export const getTarea = async (req, res) => {
   }
 };
 
-export const deleteTarea = async (req, res) => {
+const deleteTarea = async (req, res) => {
   try {
     const { id } = req.params;
     const [rows] = await pool.query("DELETE FROM tareas WHERE id = ?", [id]);
@@ -35,7 +35,7 @@ export const deleteTarea = async (req, res) => {
   }
 };
 
-export const createTarea = async (req, res) => {
+const createTarea = async (req, res) => {
   try {
     const { tarea } = req.body;
     const [rows] = await pool.query(
@@ -47,7 +47,7 @@ export const createTarea = async (req, res) => {
   }
 };
 
-export const updateTarea = async (req, res) => {
+const updateTarea = async (req, res) => {
   try {
     const { id } = req.params;
     const { tarea } = req.body;
@@ -64,4 +64,10 @@ export const updateTarea = async (req, res) => {
   }
 };
 
-
+module.exports = {
+  getTarea,
+  getTareas,
+  createTarea,
+  deleteTarea,
+  updateTarea
+}

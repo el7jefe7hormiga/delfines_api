@@ -1,5 +1,5 @@
-import { Router } from "express";
-import {
+const { Router } = require("express");
+const {
   createBitacora,
   deleteBitacora,
   getBitacora,
@@ -10,7 +10,7 @@ import {
   getBitacorasTareaPendientes,
   getHistorialJugador,
   updateBitacora
-} from "../controllers/bitacora.controller.js";
+} = require('../controllers/bitacora.controller.js');
 
 const router = Router();
 
@@ -45,4 +45,4 @@ router.post("/bitacora", createBitacora);
 // UPDATE AN Bitacora
 router.patch("/bitacora/:id", updateBitacora);
 
-export default router;
+module.exports = router;

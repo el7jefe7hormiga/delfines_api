@@ -1,11 +1,11 @@
-import { Router } from "express";
-import {
+const { Router } = require('express');
+const {
   createTarea,
   deleteTarea,
   getTarea,
   getTareas,
   updateTarea,
-} from "../controllers/tareas.controller.js";
+} = require('../controllers/tareas.controller.js');
 
 const router = Router();
 
@@ -24,4 +24,4 @@ router.post("/tarea", createTarea);
 // UPDATE AN Tarea
 router.patch("/tarea/:id", updateTarea);
 
-export default router;
+module.exports = router;

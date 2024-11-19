@@ -1,6 +1,6 @@
-import { pool } from "../db.js";
+const { pool } = require('../db.js');
 
-export const getAsistencias = async (req, res) => {
+const getAsistencias = async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM asistencias");
     res.json(rows);
@@ -9,7 +9,7 @@ export const getAsistencias = async (req, res) => {
   }
 };
 
-export const getAsistencia = async (req, res) => {
+const getAsistencia = async (req, res) => {
   try {
     const { jugador_id, reunion_id } = req.params;
     const [rows] = await pool.query("SELECT * FROM asistencias WHERE jugador_id = ? AND reunion_id = ?", [jugador_id, reunion_id]);
@@ -22,7 +22,7 @@ export const getAsistencia = async (req, res) => {
   }
 };
 
-export const getAsistenciasDeJugador = async (req, res) => {
+const getAsistenciasDeJugador = async (req, res) => {
   try {
     const { jugador_id } = req.params;
     const [rows] = await pool.query("SELECT * FROM asistencias WHERE jugador_id = ? ORDER BY reunion_id", [jugador_id]);
@@ -37,7 +37,7 @@ export const getAsistenciasDeJugador = async (req, res) => {
 
 
 
-export const deleteAsistencia = async (req, res) => {
+const deleteAsistencia = async (req, res) => {
   try {
     const { jugador_id, reunion_id } = req.params;
     const [rows] = await pool.query("DELETE FROM asistencias WHERE jugador_id = ? AND reunion_id = ?", [jugador_id, reunion_id]);
@@ -50,7 +50,7 @@ export const deleteAsistencia = async (req, res) => {
   }
 };
 
-export const createAsistencia = async (req, res) => {
+const createAsistencia = async (req, res) => {
   try {
     let asistencias = req.body;
     console.log(asistencias);
@@ -74,5 +74,11 @@ export const createAsistencia = async (req, res) => {
   }
 };
 
-
+module.exports = {
+  getAsistencia,
+  getAsistencias,
+  getAsistenciasDeJugador,
+  createAsistencia,
+  deleteAsistencia
+}
 

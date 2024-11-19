@@ -1,6 +1,6 @@
-import { pool } from "../db.js";
+const { pool } = require('../db.js');
 
-export const getStaffs = async (req, res) => {
+const getStaffs = async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM staff");
     res.json(rows);
@@ -9,7 +9,7 @@ export const getStaffs = async (req, res) => {
   }
 };
 
-export const getStaff = async (req, res) => {
+const getStaff = async (req, res) => {
   try {
     const { id } = req.params;
     const [rows] = await pool.query("SELECT * FROM staff WHERE id = ?", [
@@ -24,7 +24,7 @@ export const getStaff = async (req, res) => {
   }
 };
 
-export const deleteStaff = async (req, res) => {
+const deleteStaff = async (req, res) => {
   try {
     const { id } = req.params;
     const [rows] = await pool.query("DELETE FROM staff WHERE id = ?", [id]);
@@ -37,7 +37,7 @@ export const deleteStaff = async (req, res) => {
   }
 };
 
-export const createStaff = async (req, res) => {
+const createStaff = async (req, res) => {
   try {
     const { nombre, cargo, direccion, telefono, talla } = req.body;
     //const fecha = formatDate(new Date());
@@ -52,7 +52,7 @@ export const createStaff = async (req, res) => {
   }
 };
 
-export const updateStaff = async (req, res) => {
+const updateStaff = async (req, res) => {
   try {
     const { id } = req.params;
     const { nombre, cargo, direccion, telefono, talla } = req.body;
@@ -72,3 +72,11 @@ export const updateStaff = async (req, res) => {
     return res.status(500).json({ error: error, message: "Algo salió mal :(" });
   }
 };
+
+module.exports = {
+  getStaff,
+  getStaffs,
+  createStaff,
+  deleteStaff,
+  updateStaff
+}

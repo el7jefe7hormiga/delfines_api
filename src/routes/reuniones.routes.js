@@ -1,11 +1,11 @@
-import { Router } from "express";
-import {
+const { Router } = require('express');
+const {
   createReunion,
   deleteReunion,
   getReunion,
   getReuniones,
   updateReunion,
-} from "../controllers/reuniones.controller.js";
+} = require('../controllers/reuniones.controller.js');
 
 const router = Router();
 
@@ -24,4 +24,4 @@ router.post("/reunion", createReunion);
 // UPDATE AN Reunion
 router.patch("/reunion/:id", updateReunion);
 
-export default router;
+module.exports = router;

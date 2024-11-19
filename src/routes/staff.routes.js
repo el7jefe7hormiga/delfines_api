@@ -1,11 +1,11 @@
-import { Router } from "express";
-import {
+const { Router } = require('express');
+const {
   createStaff,
   deleteStaff,
   getStaff,
   getStaffs,
   updateStaff,
-} from "../controllers/staff.controller.js";
+} = require('../controllers/staff.controller.js');
 
 const router = Router();
 
@@ -24,4 +24,4 @@ router.post("/staff", createStaff);
 // UPDATE AN Staff
 router.patch("/staff/:id", updateStaff);
 
-export default router;
+module.exports = router;
