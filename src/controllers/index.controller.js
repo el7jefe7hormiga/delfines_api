@@ -1,12 +1,12 @@
-const { pool } = require('../db.js');
+const pool = require('../db.js');
 
 /*
-http://ruta/api/index  ->  index()
+http://ruta/api/  ->  index()
 */
 const index = (req, res) => res.json({ message: "Bienvenido a mi api" });
 
 /*
-http://rut/api/ping
+http://ruta/api/ping
 */
 const ping = async (req, res) => {
   const [result] = await pool.query("SELECT 'PONG' as result");

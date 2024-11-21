@@ -3,7 +3,6 @@ const fs = require('fs');
 //const { LOC_DB_NAME, LOC_DB_HOST, LOC_DB_USER, LOC_DB_PASSWORD } from "./env.js";
 config();
 
-console.log("NODE_ENV", process.env.NODE_ENV)
 
 /* para la API */
 const PORT = process.env.PORT || 2553;

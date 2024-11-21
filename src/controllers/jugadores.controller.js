@@ -1,10 +1,12 @@
-const { pool } = require('../db.js');
+const pool = require('../db.js');
 
 const getJugadores = async (req, res) => {
   try {
+    console.log('Buscando jugadores....');
     const [rows] = await pool.query("SELECT * FROM jugadores");
     res.json(rows);
   } catch (error) {
+    console.log(error)
     return res.status(500).json({ error: error, message: "Algo salió mal :(" });
   }
 };

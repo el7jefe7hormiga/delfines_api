@@ -1,4 +1,4 @@
-const { pool } = require('../db.js');
+const pool = require('../db.js');
 
 const getBitacoras = async (req, res) => {
   try {
