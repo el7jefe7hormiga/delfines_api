@@ -141,6 +141,7 @@ module.exports = {
   getBitacoras,
   getBitacorasCompletadas,
   getBitacorasPendientes,
+  getBitacorasTarea,
   getBitacorasTareaCompletadas,
   getBitacorasTareaPendientes,
   getHistorialJugador,
