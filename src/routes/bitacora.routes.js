@@ -6,6 +6,7 @@ const {
   getBitacoras,
   getBitacorasCompletadas,
   getBitacorasPendientes,
+  getBitacorasTarea,
   getBitacorasTareaCompletadas,
   getBitacorasTareaPendientes,
   getHistorialJugador,
@@ -25,6 +26,9 @@ router.get("/bitacoras/completadas", getBitacorasCompletadas);
 
 // GET las BitacoraS pendientes
 router.get("/bitacoras/pendientes", getBitacorasPendientes);
+
+// GET bitacoras segun la tarea
+router.get('/bitacoras/delatarea/:tarea', getBitacorasTarea);
 
 // GET las Bitacora completadas segun la tarea_id
 router.get("/bitacoras/:tarea_id/completadas", getBitacorasTareaCompletadas);

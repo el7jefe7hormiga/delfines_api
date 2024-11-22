@@ -39,7 +39,18 @@ const getBitacorasPendientes = async (req, res) => {
   }
 };
 
-
+const getBitacorasTarea = async (req, res) => {
+  const { tarea } = req.params;
+  try {
+    const [rows] = await pool.query("SELECT * FROM bitacora WHERE tarea_id=?", [tarea]);
+    if (rows.length <= 0) {
+      return res.status(404).json({ message: "No hay registros." });
+    }
+    res.json(rows);
+  } catch (error) {
+    return res.status(500).json({ error: error, message: "Algo salió mal :(" });
+  }
+};
 const getBitacorasTareaCompletadas = async (req, res) => {
   const { tarea } = req.params;
   try {
