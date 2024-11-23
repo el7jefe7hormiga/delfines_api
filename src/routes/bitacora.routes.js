@@ -10,6 +10,7 @@ const {
   getBitacorasTareaCompletadas,
   getBitacorasTareaPendientes,
   getHistorialJugador,
+  getInformeBitacora,
   updateBitacora
 } = require('../controllers/bitacora.controller.js');
 
@@ -38,6 +39,9 @@ router.get("/bitacoras/:tarea_id/pendientes", getBitacorasTareaPendientes);
 
 // GET el historial del jugador_id
 router.get("/bitacoras/historial/:jugador_id", getHistorialJugador);
+
+// GET el informe de la bitacora
+router.get("/bitacoras/informe", getInformeBitacora);
 
 
 // DELETE An Bitacora

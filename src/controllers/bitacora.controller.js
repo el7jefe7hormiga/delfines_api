@@ -30,6 +30,7 @@ const getBitacorasCompletadas = async (req, res) => {
     return res.status(500).json({ error: error, message: "Algo salió mal :(" });
   }
 };
+
 const getBitacorasPendientes = async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM bitacora WHERE completada=0");
@@ -89,6 +90,43 @@ const getHistorialJugador = async (req, res) => {
   }
 };
 
+const getInformeBitacora = async (req, res) => {
+  //const { jugador_id } = req.params;
+  try {
+    const query = `
+        SELECT 
+        j.id AS jugador_id,
+        j.nombre AS jugador_nombre,
+        SUM(CASE WHEN b.tarea_id = 1 THEN b.recibido ELSE 0 END) AS tarea_1,
+        SUM(CASE WHEN b.tarea_id = 2 THEN b.recibido ELSE 0 END) AS tarea_2,
+        SUM(CASE WHEN b.tarea_id = 3 THEN b.recibido ELSE 0 END) AS tarea_3,
+        GROUP_CONCAT(
+            CASE 
+                WHEN b.completada = 1 THEN CONCAT(t.tarea, ' [ok]') 
+                ELSE NULL 
+            END 
+            SEPARATOR ', '
+        ) AS comentarios
+    FROM 
+        jugadores j
+    LEFT JOIN 
+        bitacora b ON j.id = b.jugador_id
+    LEFT JOIN 
+        tareas t ON b.tarea_id = t.id
+    GROUP BY 
+        j.id, j.nombre;
+    `;
+    const [rows] = await pool.query(query);
+    if (rows.length <= 0) {
+      return res.status(404).json({ message: "No hay registros." });
+    }
+    res.json(rows);
+  } catch (error) {
+    return res.status(500).json({ error: error, message: "Algo salió mal :(" });
+  }
+};
+
+
 const deleteBitacora = async (req, res) => {
   try {
     const { id } = req.params;
@@ -145,6 +183,7 @@ module.exports = {
   getBitacorasTareaCompletadas,
   getBitacorasTareaPendientes,
   getHistorialJugador,
+  getInformeBitacora,
   createBitacora,
   deleteBitacora,
   updateBitacora
