@@ -91,38 +91,64 @@ const getHistorialJugador = async (req, res) => {
 };
 
 const getInformeBitacora = async (req, res) => {
-  //const { jugador_id } = req.params;
+  let connection;
+
   try {
-    const query = `
-        SELECT 
-        j.id AS jugador_id,
-        j.nombre AS jugador_nombre,
-        SUM(CASE WHEN b.tarea_id = 1 THEN b.recibido ELSE 0 END) AS tarea_1,
-        SUM(CASE WHEN b.tarea_id = 2 THEN b.recibido ELSE 0 END) AS tarea_2,
-        SUM(CASE WHEN b.tarea_id = 3 THEN b.recibido ELSE 0 END) AS tarea_3,
+    // Obtener una conexión del pool
+    connection = await pool.getConnection();
+
+    // Paso 1: Generar dinámicamente las columnas desde la tabla `tareas`
+    const [columnsResult] = await connection.query(`
+      SELECT 
         GROUP_CONCAT(
-            CASE 
-                WHEN b.completada = 1 THEN CONCAT(t.tarea, ' [ok]') 
-                ELSE NULL 
-            END 
-            SEPARATOR ', '
-        ) AS comentarios
-    FROM 
-        jugadores j
-    LEFT JOIN 
-        bitacora b ON j.id = b.jugador_id
-    LEFT JOIN 
-        tareas t ON b.tarea_id = t.id
-    GROUP BY 
-        j.id, j.nombre;
-    `;
-    const [rows] = await pool.query(query);
-    if (rows.length <= 0) {
-      return res.status(404).json({ message: "No hay registros." });
+          CONCAT(
+            'SUM(CASE WHEN b.tarea_id = ', id, ' THEN b.recibido ELSE 0 END) AS \`', tarea, '\`'
+          )
+        ) AS columns
+      FROM tareas;
+    `);
+
+    const columns = columnsResult[0].columns;
+    if (!columns) {
+      return res.status(500).send('No hay tareas definidas en la base de datos.');
     }
-    res.json(rows);
+
+    // Paso 2: Construir el query dinámico
+    const sql = `
+      SELECT 
+          j.id AS jugador_id,
+          j.nombre AS jugador_nombre,
+          ${columns},
+          GROUP_CONCAT(
+              CASE 
+                  WHEN b.completada = 1 THEN CONCAT(t.tarea, ' [ok]') 
+                  ELSE NULL 
+              END 
+              SEPARATOR ', '
+          ) AS comentarios
+      FROM 
+          jugadores j
+      LEFT JOIN 
+          bitacora b ON j.id = b.jugador_id
+      LEFT JOIN 
+          tareas t ON b.tarea_id = t.id
+      GROUP BY 
+          j.id, j.nombre;
+    `;
+
+    // Paso 3: Ejecutar el query generado dinámicamente
+    const [results] = await connection.query(sql);
+
+    // Enviar los resultados al cliente
+    res.json(results);
   } catch (error) {
-    return res.status(500).json({ error: error, message: "Algo salió mal :(" });
+    console.error('Error ejecutando el script:', error);
+    res.status(500).send('Error ejecutando el reporte.');
+  } finally {
+    if (connection) {
+      // Liberar la conexión al pool
+      connection.release();
+    }
   }
 };
 
