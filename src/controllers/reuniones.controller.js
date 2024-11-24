@@ -2,7 +2,7 @@ const pool = require('../db.js');
 
 const getReuniones = async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM reuniones");
+    const [rows] = await pool.query("SELECT id, date_format(fecha, '%Y-%m-%d') AS fecha, tipo FROM reuniones");
     res.json(rows);
   } catch (error) {
     return res.status(500).json({ error: error, message: "Algo salió mal :(" });
@@ -12,7 +12,7 @@ const getReuniones = async (req, res) => {
 const getReunion = async (req, res) => {
   try {
     const { id } = req.params;
-    const [rows] = await pool.query("SELECT * FROM reuniones WHERE id = ?", [id]);
+    const [rows] = await pool.query("SELECT id, date_format(fecha, '%Y-%m-%d') AS fecha, tipo FROM reuniones WHERE id = ?", [id]);
     if (rows.length <= 0) {
       return res.status(404).json({ message: "Reunion no encontrada!" });
     }

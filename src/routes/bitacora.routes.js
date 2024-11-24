@@ -32,10 +32,10 @@ router.get("/bitacoras/pendientes", getBitacorasPendientes);
 router.get('/bitacoras/delatarea/:tarea', getBitacorasTarea);
 
 // GET las Bitacora completadas segun la tarea_id
-router.get("/bitacoras/:tarea_id/completadas", getBitacorasTareaCompletadas);
+router.get("/bitacoras/completadas/:tarea_id", getBitacorasTareaCompletadas);
 
 // GET las Bitacora pendientes segun la tarea_id
-router.get("/bitacoras/:tarea_id/pendientes", getBitacorasTareaPendientes);
+router.get("/bitacoras/pendientes/:tarea_id", getBitacorasTareaPendientes);
 
 // GET el historial del jugador_id
 router.get("/bitacoras/historial/:jugador_id", getHistorialJugador);

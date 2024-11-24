@@ -2,7 +2,7 @@ const pool = require('../db.js');
 
 const getBitacoras = async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM bitacora");
+    const [rows] = await pool.query("SELECT id, tarea_id, jugador_id, recibido, date_format(fecha, '%Y-%m-%d %T') AS fecha, completada, comentario FROM bitacora");
     res.json(rows);
   } catch (error) {
     return res.status(500).json({ error: error, message: "Algo salió mal :(" });
@@ -12,7 +12,7 @@ const getBitacoras = async (req, res) => {
 const getBitacora = async (req, res) => {
   try {
     const { id } = req.params;
-    const [rows] = await pool.query("SELECT * FROM bitacora WHERE id = ?", [id]);
+    const [rows] = await pool.query("SELECT id, tarea_id, jugador_id, recibido, date_format(fecha, '%Y-%m-%d %T') AS fecha, completada, comentario FROM bitacora WHERE id = ?", [id]);
     if (rows.length <= 0) {
       return res.status(404).json({ message: "Bitacora no encontrado!" });
     }
@@ -24,7 +24,7 @@ const getBitacora = async (req, res) => {
 
 const getBitacorasCompletadas = async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM bitacora WHERE completada=1");
+    const [rows] = await pool.query("SELECT id, tarea_id, jugador_id, recibido, date_format(fecha, '%Y-%m-%d %T') AS fecha, completada, comentario FROM bitacora WHERE completada=1");
     res.json(rows);
   } catch (error) {
     return res.status(500).json({ error: error, message: "Algo salió mal :(" });
@@ -33,7 +33,7 @@ const getBitacorasCompletadas = async (req, res) => {
 
 const getBitacorasPendientes = async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM bitacora WHERE completada=0");
+    const [rows] = await pool.query("SELECT id, tarea_id, jugador_id, recibido, date_format(fecha, '%Y-%m-%d %T') AS fecha, completada, comentario FROM bitacora WHERE completada=0");
     res.json(rows);
   } catch (error) {
     return res.status(500).json({ error: error, message: "Algo salió mal :(" });
@@ -43,7 +43,7 @@ const getBitacorasPendientes = async (req, res) => {
 const getBitacorasTarea = async (req, res) => {
   const { tarea } = req.params;
   try {
-    const [rows] = await pool.query("SELECT * FROM bitacora WHERE tarea_id=?", [tarea]);
+    const [rows] = await pool.query("SELECT id, tarea_id, jugador_id, recibido, date_format(fecha, '%Y-%m-%d %T') AS fecha, completada, comentario FROM bitacora WHERE tarea_id=?", [tarea]);
     if (rows.length <= 0) {
       return res.status(404).json({ message: "No hay registros." });
     }
@@ -53,9 +53,9 @@ const getBitacorasTarea = async (req, res) => {
   }
 };
 const getBitacorasTareaCompletadas = async (req, res) => {
-  const { tarea } = req.params;
+  const { tarea_id } = req.params;
   try {
-    const [rows] = await pool.query("SELECT * FROM bitacora WHERE tarea_id=? AND completada=1", [tarea]);
+    const [rows] = await pool.query("SELECT id, tarea_id, jugador_id, recibido, date_format(fecha, '%Y-%m-%d %T') AS fecha, completada, comentario FROM bitacora WHERE tarea_id=? AND completada=1", [tarea_id]);
     if (rows.length <= 0) {
       return res.status(404).json({ message: "No hay registros." });
     }
@@ -67,7 +67,7 @@ const getBitacorasTareaCompletadas = async (req, res) => {
 const getBitacorasTareaPendientes = async (req, res) => {
   const { tarea_id } = req.params;
   try {
-    const [rows] = await pool.query("SELECT * FROM bitacora WHERE tarea_id=? AND completada=0", [tarea_id]);
+    const [rows] = await pool.query("SELECT id, tarea_id, jugador_id, recibido, date_format(fecha, '%Y-%m-%d %T') AS fecha, completada, comentario FROM bitacora WHERE tarea_id=? AND completada=0", [tarea_id]);
     if (rows.length <= 0) {
       return res.status(404).json({ message: "No hay registros." });
     }
@@ -80,7 +80,7 @@ const getBitacorasTareaPendientes = async (req, res) => {
 const getHistorialJugador = async (req, res) => {
   const { jugador_id } = req.params;
   try {
-    const [rows] = await pool.query("SELECT * FROM bitacora WHERE jugador_id=?", [jugador_id]);
+    const [rows] = await pool.query("SELECT id, tarea_id, jugador_id, recibido, date_format(fecha, '%Y-%m-%d %T') AS fecha, completada, comentario FROM bitacora WHERE jugador_id=?", [jugador_id]);
     if (rows.length <= 0) {
       return res.status(404).json({ message: "No hay registros." });
     }
@@ -192,7 +192,7 @@ const updateBitacora = async (req, res) => {
     //console.log(result);
     if (result.affectedRows === 0)
       return res.status(404).json({ message: "Bitacora no encontrado!" });
-    const [rows] = await pool.query("SELECT * FROM bitacora WHERE id = ?", [id]);
+    const [rows] = await pool.query("SELECT id, tarea_id, jugador_id, recibido, date_format(fecha, '%Y-%m-%d %T') AS fecha, completada, comentario FROM bitacora WHERE id = ?", [id]);
     //console.log(rows);
     res.json(rows[0]);
   } catch (error) {
