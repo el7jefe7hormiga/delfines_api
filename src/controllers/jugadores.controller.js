@@ -3,7 +3,7 @@ const pool = require('../db.js');
 const getJugadores = async (req, res) => {
   try {
     console.log('Buscando jugadores....');
-    const [rows] = await pool.query("SELECT nombre, sexo, date_format(fdn, '%Y-%m-%d') AS fdn, direccion, escuela, padres, telefono, talla FROM jugadores");
+    const [rows] = await pool.query("SELECT id, nombre, sexo, date_format(fdn, '%Y-%m-%d') AS fdn, direccion, escuela, padres, telefono, talla FROM jugadores");
     res.json(rows);
   } catch (error) {
     console.log(error)
@@ -14,7 +14,7 @@ const getJugadores = async (req, res) => {
 const getJugador = async (req, res) => {
   try {
     const { id } = req.params;
-    const [rows] = await pool.query("SELECT nombre, sexo, date_format(fdn, '%Y-%m-%d') AS fdn, direccion, escuela, padres, telefono, talla FROM jugadores WHERE id = ?", [
+    const [rows] = await pool.query("SELECT id, nombre, sexo, date_format(fdn, '%Y-%m-%d') AS fdn, direccion, escuela, padres, telefono, talla FROM jugadores WHERE id = ?", [
       id,
     ]);
     if (rows.length <= 0) {
