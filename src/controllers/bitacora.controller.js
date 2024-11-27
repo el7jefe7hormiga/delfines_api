@@ -152,6 +152,44 @@ const getInformeBitacora = async (req, res) => {
   }
 };
 
+const getJugadorTareaBitacora = async (req, res) => {
+  const sql = `
+  SELECT 
+      j.id AS jugador_id,
+      j.nombre AS jugador_nombre,
+      t.id AS tarea_id,
+      t.tarea AS tarea_nombre,
+      b.id AS bitacora_id,
+      b.jugador_id AS bitacora_jugador_id,
+      b.tarea_id AS bitacora_tarea_id,
+      b.recibido,
+      b.completada,
+      b.comentario
+  FROM 
+      jugadores j
+  CROSS JOIN 
+      tareas t 
+  LEFT JOIN 
+      bitacora b 
+  ON 
+      j.id = b.jugador_id AND t.id = b.tarea_id 
+  WHERE 
+      j.id = ? 
+  ORDER BY 
+      j.id, 
+      t.id; 
+  `;
+  const { jugador_id } = req.params;
+  try {
+    const [rows] = await pool.query(sql, [jugador_id]);
+    if (rows.length <= 0) {
+      return res.status(404).json({ message: "No hay registros." });
+    }
+    res.json(rows);
+  } catch (error) {
+    return res.status(500).json({ error: error, message: "Algo salió mal :(" });
+  }
+}
 
 const deleteBitacora = async (req, res) => {
   try {
@@ -210,6 +248,7 @@ module.exports = {
   getBitacorasTareaPendientes,
   getHistorialJugador,
   getInformeBitacora,
+  getJugadorTareaBitacora,
   createBitacora,
   deleteBitacora,
   updateBitacora
