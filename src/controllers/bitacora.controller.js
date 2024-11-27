@@ -161,11 +161,13 @@ const getJugadorTareaBitacora = async (req, res) => {
       t.tarea AS tarea_nombre,
       b.id AS bitacora_id,
       date_format(b.fecha, '%Y-%m-%d %T') AS bitacora_fecha,
-      b.jugador_id AS bitacora_jugador_id,
-      b.tarea_id AS bitacora_tarea_id,
       b.recibido,
+      t.monto,
+      (t.monto - b.recibido) as pendiente,
       b.completada,
-      b.comentario
+      b.comentario,
+      b.jugador_id AS bitacora_jugador_id,
+      b.tarea_id AS bitacora_tarea_id
   FROM 
       jugadores j
   CROSS JOIN 
@@ -176,10 +178,9 @@ const getJugadorTareaBitacora = async (req, res) => {
       j.id = b.jugador_id AND t.id = b.tarea_id 
   WHERE 
       j.id = ? 
-  ORDER BY 
-      j.id, 
-      t.id; 
-  `;
+  ORDER BY
+	  bitacora_id IS NULL,
+    bitacora_id ASC;`;
   const { jugador_id } = req.params;
   try {
     const [rows] = await pool.query(sql, [jugador_id]);
