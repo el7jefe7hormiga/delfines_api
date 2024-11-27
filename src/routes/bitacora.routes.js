@@ -45,7 +45,7 @@ router.get("/bitacoras/historial/:jugador_id", getHistorialJugador);
 router.get("/bitacoras/informe", getInformeBitacora);
 
 // GET donde me traeras jugador-tarea-bitacora
-router.get("/bitacora/jugador/tarea/bitacora/:jugador_id", getJugadorTareaBitacora);
+router.get("/jugador/tarea/bitacora/:jugador_id", getJugadorTareaBitacora);
 
 
 // DELETE An Bitacora
