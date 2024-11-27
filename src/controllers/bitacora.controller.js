@@ -160,6 +160,7 @@ const getJugadorTareaBitacora = async (req, res) => {
       t.id AS tarea_id,
       t.tarea AS tarea_nombre,
       b.id AS bitacora_id,
+      date_format(b.fecha, '%Y-%m-%d %T') AS bitacora_fecha,
       b.jugador_id AS bitacora_jugador_id,
       b.tarea_id AS bitacora_tarea_id,
       b.recibido,
