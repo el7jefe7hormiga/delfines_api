@@ -1,10 +1,11 @@
 const { Router } = require('express');
 const {
-  createStaff,
-  deleteStaff,
-  getStaff,
   getStaffs,
-  updateStaff,
+  getStaff,
+  deleteStaff,
+  login,
+  createStaff,
+  updateStaff
 } = require('../controllers/staff.controller.js');
 
 const router = Router();
@@ -17,6 +18,9 @@ router.get("/staff/:id", getStaff);
 
 // DELETE An Staff
 router.delete("/staff/:id", deleteStaff);
+
+// LOGIN
+router.post('/staff/login', login);
 
 // INSERT An Staff
 router.post("/staff", createStaff);

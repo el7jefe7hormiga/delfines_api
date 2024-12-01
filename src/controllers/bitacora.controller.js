@@ -165,9 +165,7 @@ const getJugadorTareaBitacora = async (req, res) => {
       t.monto,
       (t.monto - b.recibido) as pendiente,
       b.completada,
-      b.comentario,
-      b.jugador_id AS bitacora_jugador_id,
-      b.tarea_id AS bitacora_tarea_id
+      b.comentario
   FROM 
       jugadores j
   CROSS JOIN 

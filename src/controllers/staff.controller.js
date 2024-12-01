@@ -1,8 +1,10 @@
 const pool = require('../db.js');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const getStaffs = async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM staff");
+    const [rows] = await pool.query("SELECT nombre, cargo, direccion, telefono, talla, email, username FROM staff");
     res.json(rows);
   } catch (error) {
     return res.status(500).json({ error: error, message: "Algo salió mal :(" });
@@ -12,7 +14,7 @@ const getStaffs = async (req, res) => {
 const getStaff = async (req, res) => {
   try {
     const { id } = req.params;
-    const [rows] = await pool.query("SELECT * FROM staff WHERE id = ?", [
+    const [rows] = await pool.query("SELECT nombre, cargo, direccion, telefono, talla, email, username FROM staff WHERE id = ?", [
       id,
     ]);
     if (rows.length <= 0) {
@@ -37,16 +39,84 @@ const deleteStaff = async (req, res) => {
   }
 };
 
+const login = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    // Verificar que los campos no estén vacíos
+    if (!username || !password) {
+      return res.status(400).json({ message: 'Username y contraseña son requeridos.' });
+    }
+
+    // Buscar al usuario en la base de datos
+    const [rows] = await pool.query('SELECT * FROM staff WHERE username = ?', [username]);
+
+    // Verificar si el usuario existe
+    if (rows.length === 0) {
+      return res.status(401).json({ message: 'Credenciales inválidas.' });
+    }
+
+    const user = rows[0];
+
+    // Comparar contraseñas (hash vs texto plano)
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: 'Credenciales inválidas.' });
+    }
+
+    // Generar token JWT
+    const token = jwt.sign(
+      { id: user.id, username: user.username },
+      process.env.JWT_SECRET || 'default_secret', // Usa una variable de entorno para la clave secreta
+      { expiresIn: '1h' } // Token válido por 1 hora
+    );
+
+    // Enviar respuesta
+    res.status(200).json({
+      message: '👍 Inicio de sesión exitoso',
+      token,
+      user: {
+        id: user.id,
+        nombre: user.nombre,
+        cargo: user.cargo,
+        username: user.username,
+        email: user.email
+        // Otros campos que quieras enviar
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Algo salió mal :(', error });
+  }
+};
+
 const createStaff = async (req, res) => {
   try {
-    const { nombre, cargo, direccion, telefono, talla } = req.body;
-    //const fecha = formatDate(new Date());
-    const [rows] = await pool.query(
-      "INSERT INTO staff ( nombre, cargo, direccion, telefono, talla ) VALUES (?, ?, ?, ?, ?)",
-      [nombre, cargo, direccion, telefono, talla]
+    const { nombre, cargo, direccion, telefono, talla, email, username, password } = req.body;
+
+    if (!nombre || !username || !password || !email) {
+      return res.status(400).json({ message: 'Nombre, email, username y contraseña son requeridos.' });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const [row] = await pool.query(
+      "INSERT INTO staff ( nombre, cargo, direccion, telefono, talla, email, username, password ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [nombre, cargo, direccion, telefono, talla, email, username, hashedPassword]
     );
     //res.status(201).json({ nombre, cargo, direccion, telefono, talla });
-    res.status(201).json({ info: rows, data: req.body })
+    res.status(201).json({
+      message: 'Usuario registrado exitosamente.',
+      user: {
+        id: row.id,
+        nombre: row.nombre,
+        cargo: row.cargo,
+        direccion: row.direccion,
+        telefono: row.telefono,
+        talla: row.tallan,
+        email: row.email,
+        username: row.username
+      }
+    })
   } catch (error) {
     return res.status(500).json({ error: error, message: "Algo salió mal :(" });
   }
@@ -54,6 +124,7 @@ const createStaff = async (req, res) => {
 
 const updateStaff = async (req, res) => {
   try {
+    // el email, username y password NO SE PUEDEN EDITAR, en todo caso se borra y se crea otro nuevo
     const { id } = req.params;
     const { nombre, cargo, direccion, telefono, talla } = req.body;
     //const fecha = formatDate(new Date());
@@ -78,5 +149,6 @@ module.exports = {
   getStaffs,
   createStaff,
   deleteStaff,
+  login,
   updateStaff
 }
