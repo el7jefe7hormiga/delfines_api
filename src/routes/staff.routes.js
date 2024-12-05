@@ -4,6 +4,7 @@ const {
   getStaff,
   deleteStaff,
   login,
+  resetPassword,
   createStaff,
   updateStaff
 } = require('../controllers/staff.controller.js');
@@ -21,6 +22,9 @@ router.delete("/staff/:id", deleteStaff);
 
 // LOGIN
 router.post('/staff/login', login);
+
+// RESET LOGIN
+router.post('/staff/reset', resetPassword);
 
 // INSERT An Staff
 router.post("/staff", createStaff);

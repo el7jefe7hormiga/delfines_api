@@ -1,6 +1,8 @@
 const pool = require('../db.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer'); // Import the nodemailer library for email sending functionality.
+
 
 const getStaffs = async (req, res) => {
   try {
@@ -90,6 +92,53 @@ const login = async (req, res) => {
   }
 };
 
+const resetPassword = async (req, res) => {
+
+  // Create a reusable transporter object using SMTP transport.
+  const transporterGoogle = nodemailer.createTransport({
+    host: process.env.SMTP_GOOGLE_HOST,
+    port: process.env.SMTP_GOOGLE_PORT,
+    //secure: false, // use false for STARTTLS; true for SSL on port 465
+    auth: {
+      user: process.env.SMTP_GOOGLE_USER,
+      pass: process.env.SMTP_GOOGLE_PASS
+    }
+  });
+  try {
+    console.log('Recibiendo datos....');
+    const { name, subject, email, txt_message, html_message } = req.body; // Destructure and retrieve data from request body.
+
+    console.log('Validando datos...');
+    // Validate required fields.
+    if (!name || !subject || !email || !txt_message) {
+      return res.status(400).json({ status: 'error', message: 'Missing required fields' });
+    }
+
+    console.log('Datos... ok 👍');
+    console.log('Preparando email... 📫 ');
+    // Prepare the email message options.
+    const mailOptions = {
+      from: process.env.SMTP_GOOGLE_USER, // Sender address from environment variables.
+      to: `${name} <${email}>`, // Recipient's name and email address.
+      //replyTo: process.env.REPLY_TO, // Sets the email address for recipient responses.
+      subject: subject, // Subject line.
+      text: txt_message, // Plaintext body.
+      html: html_message
+    };
+
+    console.log('📬 Enviando email....');
+    // Send email and log the response.
+    const info = await transporterGoogle.sendMail(mailOptions);
+    console.log('Email sent:', info.response);
+    res.status(200).json({ status: 'success', message: 'Email sent successfully' });
+  } catch (err) {
+    // Handle errors and log them.
+    console.error('Error sending email:', err);
+    res.status(500).json({ status: 'error', message: 'Error sending email, please try again.' });
+  }
+
+}
+
 const createStaff = async (req, res) => {
   try {
     const { nombre, cargo, direccion, telefono, talla, email, username, password } = req.body;
@@ -150,5 +199,6 @@ module.exports = {
   createStaff,
   deleteStaff,
   login,
+  resetPassword,
   updateStaff
 }
