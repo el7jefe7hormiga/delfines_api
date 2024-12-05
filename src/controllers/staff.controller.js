@@ -111,7 +111,7 @@ const resetPassword = async (req, res) => {
     console.log('Validando datos...');
     // Validate required fields.
     if (!name || !subject || !email || !txt_message) {
-      return res.status(400).json({ status: 'error', message: 'Missing required fields' });
+      return res.status(400).json({ status: 'error', message: 'Missing required fields', data: req.body });
     }
 
     console.log('Datos... ok 👍');
