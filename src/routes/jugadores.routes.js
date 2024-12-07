@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const {
-  createJugador,
+  createJugador, validateJugador,
   deleteJugador,
   getJugador,
   getJugadores,
@@ -19,9 +19,9 @@ router.get("/jugador/:id", getJugador);
 router.delete("/jugador/:id", deleteJugador);
 
 // INSERT An Jugador
-router.post("/jugador", createJugador);
+router.post("/jugador", validateJugador, createJugador);
 
 // UPDATE AN Jugador
-router.patch("/jugador/:id", updateJugador);
+router.patch("/jugador/:id", validateJugador, updateJugador);
 
 module.exports = router;

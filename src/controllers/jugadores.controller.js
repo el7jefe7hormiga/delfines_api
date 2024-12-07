@@ -1,4 +1,19 @@
 const pool = require('../db.js');
+const { body, validationResult } = require("express-validator");
+
+const validateJugador = [
+  body("nombre").notEmpty().withMessage("El nombre es obligatorio."),
+  body("sexo").isIn(["M", "F"]).withMessage("El sexo debe ser 'M' o 'F'."),
+  body("fdn").isDate().withMessage("La fecha de nacimiento debe ser válida."),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+    next();
+  }
+];
+
 
 const getJugadores = async (req, res) => {
   try {
@@ -39,27 +54,46 @@ const deleteJugador = async (req, res) => {
   }
 };
 
+/*
 const createJugador = async (req, res) => {
   try {
     const { nombre, sexo, fdn, direccion, escuela, padres, telefono, talla } = req.body;
-    const fecha = formatDate(new Date());
     const [rows] = await pool.query(
       "INSERT INTO jugadores (nombre, sexo, fdn, direccion, escuela, padres, telefono, talla) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
       [nombre, sexo, fdn, direccion, escuela, padres, telefono, talla]
     );
-    //res.status(201).json({ nombre, sexo, fdn, direccion, escuela, padres, telefono, talla });
     res.status(201).json({ info: rows, data: req.body })
   } catch (error) {
-    return res.status(500).json({ error: error, message: "Algo salió mal :(" });
+    return res.status(500).json({ error: error.message, message: "Algo salió mal :(" });
+  }
+};*/
+const createJugador = async (req, res) => {
+  try {
+    const { nombre, sexo, fdn, direccion, escuela, padres, telefono, talla } = req.body;
+    const [rows] = await pool.query(
+      "INSERT INTO jugadores (nombre, sexo, fdn, direccion, escuela, padres, telefono, talla) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      [nombre, sexo, fdn, direccion, escuela, padres, telefono, talla]
+    );
+    res.status(201).json({
+      success: true,
+      message: "Jugador creado con éxito",
+      data: req.body,
+      info: rows
+    });
+  } catch (error) {
+    console.error("Error al crear jugador:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Algo salió mal. Inténtalo más tarde."
+    });
   }
 };
+
 
 const updateJugador = async (req, res) => {
   try {
     const { id } = req.params;
     const { nombre, sexo, fdn, direccion, escuela, padres, telefono, talla } = req.body;
-    //const fecha = formatDate(new Date());
-    //console.log('updatedAt', fecha);
     const [result] = await pool.query(
       "UPDATE jugadores SET nombre = IFNULL(?, nombre), sexo = IFNULL(?, sexo), fdn = IFNULL(?, fdn), direccion = IFNULL(?, direccion), escuela = IFNULL(?, escuela), padres = IFNULL(?, padres), telefono = IFNULL(?, telefono), talla = IFNULL(?, talla) WHERE id = ?",
       [nombre, sexo, fdn, direccion, escuela, padres, telefono, talla, id]
@@ -78,7 +112,7 @@ const updateJugador = async (req, res) => {
 module.exports = {
   getJugador,
   getJugadores,
-  createJugador,
+  createJugador, validateJugador,
   deleteJugador,
   updateJugador
 }
