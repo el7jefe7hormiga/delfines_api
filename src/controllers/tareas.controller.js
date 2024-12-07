@@ -37,9 +37,9 @@ const deleteTarea = async (req, res) => {
 
 const createTarea = async (req, res) => {
   try {
-    const { tarea } = req.body;
+    const { tarea, monto } = req.body;
     const [rows] = await pool.query(
-      "INSERT INTO tareas (tarea) VALUES (?)", [tarea]);
+      "INSERT INTO tareas (tarea, monto) VALUES (?, ?)", [tarea, monto]);
     //res.status(201).json({ tarea });
     res.status(201).json({ info: rows, data: req.body })
   } catch (error) {
@@ -50,9 +50,9 @@ const createTarea = async (req, res) => {
 const updateTarea = async (req, res) => {
   try {
     const { id } = req.params;
-    const { tarea } = req.body;
+    const { tarea, monto } = req.body;
     const [result] = await pool.query(
-      "UPDATE tareas SET tarea = IFNULL(?, tarea) WHERE id = ?", [tarea, id]);
+      "UPDATE tareas SET tarea = IFNULL(?, tarea), monto = IFNULL(?, monto) WHERE id = ?", [tarea, monto, id]);
     //console.log(result);
     if (result.affectedRows === 0)
       return res.status(404).json({ message: "Tarea no encontrado!" });
