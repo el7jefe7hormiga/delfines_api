@@ -94,17 +94,37 @@ const updateJugador = async (req, res) => {
   try {
     const { id } = req.params;
     const { nombre, sexo, fdn, direccion, escuela, padres, telefono, talla } = req.body;
+
+    // Verifica que el ID sea válido
+    if (isNaN(parseInt(id))) {
+      return res.status(400).json({ success: false, message: "ID inválido, debe ser un número" });
+    }
+
     const [result] = await pool.query(
-      "UPDATE jugadores SET nombre = IFNULL(?, nombre), sexo = IFNULL(?, sexo), fdn = IFNULL(?, fdn), direccion = IFNULL(?, direccion), escuela = IFNULL(?, escuela), padres = IFNULL(?, padres), telefono = IFNULL(?, telefono), talla = IFNULL(?, talla) WHERE id = ?",
+      `UPDATE jugadores 
+       SET 
+         nombre = IFNULL(?, nombre), 
+         sexo = IFNULL(?, sexo), 
+         fdn = IFNULL(?, fdn), 
+         direccion = IFNULL(?, direccion), 
+         escuela = IFNULL(?, escuela), 
+         padres = IFNULL(?, padres), 
+         telefono = IFNULL(?, telefono), 
+         talla = IFNULL(?, talla) 
+       WHERE id = ?`,
       [nombre, sexo, fdn, direccion, escuela, padres, telefono, talla, id]
     );
-    //console.log(result);
-    if (result.affectedRows === 0)
+    if (result.affectedRows === 0) {
       return res.status(404).json({ message: "Jugador no encontrado!" });
+    }
     const [rows] = await pool.query("SELECT * FROM jugadores WHERE id = ?", [id]);
-    //console.log(rows);
-    res.json(rows[0]);
+    res.json({
+      success: true,
+      message: "Jugador actualizado con éxito",
+      data: rows[0]
+    });
   } catch (error) {
+    console.error("Error al actualizar jugador:", error);
     return res.status(500).json({ error: error, message: "Algo salió mal :(" });
   }
 };
