@@ -6,7 +6,7 @@ const nodemailer = require('nodemailer'); // Import the nodemailer library for e
 
 const getStaffs = async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT nombre, cargo, direccion, telefono, talla, email, username FROM staff");
+    const [rows] = await pool.query("SELECT id, nombre, cargo, direccion, telefono, talla, email, username FROM staff");
     res.json(rows);
   } catch (error) {
     return res.status(500).json({ error: error, message: "Algo salió mal :(" });
@@ -16,7 +16,7 @@ const getStaffs = async (req, res) => {
 const getStaff = async (req, res) => {
   try {
     const { id } = req.params;
-    const [rows] = await pool.query("SELECT nombre, cargo, direccion, telefono, talla, email, username FROM staff WHERE id = ?", [
+    const [rows] = await pool.query("SELECT id, nombre, cargo, direccion, telefono, talla, email, username FROM staff WHERE id = ?", [
       id,
     ]);
     if (rows.length <= 0) {
